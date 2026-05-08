@@ -1,5 +1,4 @@
-# Salvador_Finals_Pygame
-A repository for the game
+# Space Pirates
 
 -Assets
 -Assets. Credited to Tim Ruscica (@tech_with_tim)
