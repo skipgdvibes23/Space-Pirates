@@ -7,6 +7,11 @@ Space Pirates is a high-energy, 2D survival-arcade game where the player assumes
 
 # Contributors
 
--Assets. Credited to Tim Ruscica (@tech_with_tim)
+- **Assets**, Credited to Tim Ruscica (@tech_with_tim)
 
--Background Music. Credited to © 2026 Benedick Salvador. All rights reserved.
+- **Background Music**, Credited to © 2026 Benedick Salvador. All rights reserved.
+
+**Notes**
+
+- add a background of a planet in the background image.
+- add a death animation
