@@ -16,7 +16,12 @@ def resource_path(relative_path):
 
 
 pygame.font.init()
-pygame.mixer.init()
+
+# Temporary Fix
+try:
+    pygame.mixer.init()
+except pygame.error:
+    print("No audio device found. Continue without sound")
 
 
 
@@ -46,13 +51,28 @@ RED_LASER = pygame.image.load(resource_path(os.path.join('assets', 'pixel_laser_
 YELLOW_LASER = pygame.image.load(resource_path(os.path.join('assets', 'pixel_laser_yellow.png')))
 
 # Background Image
-BACKGROUND_IMG = pygame.transform.scale(pygame.image.load(resource_path(os.path.join('assets', 'space.png'))), (WIDTH, HEIGHT))
+BACKGROUND_IMG = pygame.transform.scale(pygame.image.load(resource_path(os.path.join('assets', 'space - Copy.png'))), (WIDTH, HEIGHT))
 
 # SOUNDS
-BULLET_HIT_SOUND = pygame.mixer.Sound(resource_path(os.path.join('assets', 'Grenade+1.mp3')))
-BULLET_FIRE_SOUND = pygame.mixer.Sound(resource_path(os.path.join('assets', 'Gun+Silencer.mp3')))
-pygame.mixer.music.load(resource_path(os.path.join('assets', 'background_music.mp3')))
-pygame.mixer.music.set_volume(0.3) 
+
+# TEMPORARY FIX for NO AUDIO
+try:
+    BULLET_HIT_SOUND = pygame.mixer.Sound(resource_path(os.path.join('assets', 'Grenade+1.mp3')))
+except:
+    BULLET_HIT_SOUND = None
+
+try:
+    BULLET_FIRE_SOUND = pygame.mixer.Sound(resource_path(os.path.join('assets', 'Gun+Silencer.mp3')))
+except:
+    BULLET_FIRE_SOUND = None
+
+try:
+    pygame.mixer.music.load(resource_path(os.path.join('assets', 'background_music.mp3')))
+    pygame.mixer.music.set_volume(0.3)
+    pygame.mixer.music.play(-1)
+except: 
+    print("Audio could not be loaded")
+
 
 FRAMESPERSEC = 60
 
@@ -102,7 +122,8 @@ class Ship:
             elif laser.collision(object):
                 object.health -= 10
                 self.lasers.remove(laser)
-                BULLET_HIT_SOUND.play()
+                if BULLET_HIT_SOUND:
+                    BULLET_HIT_SOUND.play()
 
 
     def cooldown(self):
@@ -116,7 +137,8 @@ class Ship:
             laser = Laser(self.x, self.y, self.laser_img)
             self.lasers.append(laser)
             self.cooldown_counter = 1
-            BULLET_FIRE_SOUND.play()
+            if BULLET_FIRE_SOUND:
+                BULLET_FIRE_SOUND.play()
 
     def get_width(self):
         return self.ship_img.get_width()
@@ -143,9 +165,9 @@ class Player(Ship):
                 for object in objects:
                     if laser.collision(object):
                         objects.remove(object)
-                        self.lasers.remove(laser)
-                        BULLET_HIT_SOUND.play()
-                        break
+                        self.lasers.remove(laser)    
+                        if BULLET_HIT_SOUND:
+                            BULLET_HIT_SOUND.play()
 
     def draw(self, window):
         super().draw(window)
@@ -175,7 +197,8 @@ class EnemyShip(Ship):
             laser = Laser(self.x - 25, self.y, self.laser_img)
             self.lasers.append(laser)
             self.cooldown_counter = 1
-            BULLET_FIRE_SOUND.play()
+            if BULLET_FIRE_SOUND:
+                BULLET_FIRE_SOUND.play()
 
 
 def collide(object1, object2):
@@ -287,7 +310,8 @@ def main():
             if collide(enemy, player):
                 player.health -= 10
                 enemies.remove(enemy)
-                BULLET_HIT_SOUND.play()
+                if BULLET_HIT_SOUND:
+                    BULLET_HIT_SOUND.play()
             elif enemy.y + enemy.get_height() > HEIGHT:
                 lives -= 1
                 enemies.remove(enemy)
@@ -321,6 +345,5 @@ def main_menu():
     pygame.quit()
     sys.exit()
 
-pygame.mixer.music.play(-1)
 
-main_menu()         
+main_menu()
